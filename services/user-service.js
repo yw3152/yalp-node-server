@@ -1,5 +1,6 @@
 const dao = require('../db/user/user-dao')
 const User = require('../db/user/user-model')
+const passport = require('passport');
 let loggedInUserId = null;
 
 
@@ -53,6 +54,7 @@ module.exports = (app) => {
         .catch(e=>{console.log(e)})
   }
 
+  app.post('/login',  passport.authenticate("local"), userLogin)
   app.get('/users', findUsers)
   app.get('/user', getCurrentUser)
   app.get('/user/:uid', getUserById)
