@@ -1,6 +1,5 @@
 const dao = require('../db/user/user-dao')
 const User = require('../db/user/user-model')
-const passport = require('passport');
 let loggedInUserId = null;
 
 
@@ -11,8 +10,8 @@ module.exports = (app) => {
   }
   const userRegister = (req, res) => {
     console.log(req.body);
-    const {email, username, password, role, avatarIcon} = req.body;
-    const newUser = new User({email, username, role, avatarIcon});
+    const {email, username, password, role} = req.body;
+    const newUser = new User({email, username, password, role});
 
 
     User.register(newUser, password)
@@ -33,6 +32,14 @@ module.exports = (app) => {
         .catch(e=>{console.log(e); res.sendStatus(403)})
   }
 
+  const getUserById = (req, res) => {
+    const id = req.params.uid;
+    console.log("get current user by id server", id)
+    dao.findUserById(id)
+    .then(user => {console.log("get userby id", user);res.json(user)})
+        .catch(e=>{console.log(e); res.sendStatus(403)})
+  }
+
   const userLogout = (req, res) => {
     console.log("user logout")
     loggedInUserId = null;
@@ -46,28 +53,12 @@ module.exports = (app) => {
         .catch(e=>{console.log(e)})
   }
 
-  app.post('/login',  passport.authenticate("local"), userLogin)
-  // app.post("/login", (req, res, next) => {
-  //   passport.authenticate("local", (err, user, info) => {
-  //     if (err) throw err;
-  //     if (!user) res.send("No User Exists");
-  //     else {
-  //       req.logIn(user, (err) => {
-  //         if (err) throw err;
-  //         res.send("Successfully Authenticated");
-  //         console.log(req.user);
-  //       });
-  //     }
-  //   })(req, res, next);
-  // });
-
   app.get('/users', findUsers)
   app.get('/user', getCurrentUser)
+  app.get('/user/:uid', getUserById)
   app.get('/register', (req,res) => res.render('users/register'))
   app.get('/login', (req, res)=>res.render('users/login'))
   app.post('/register', userRegister)
   app.get('/logout', userLogout)
   app.put('/user', updateUserProfile)
 }
-
-//dummy avatar icon: https://images.megapixl.com/4684/46846368.jpg

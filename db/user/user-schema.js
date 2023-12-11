@@ -7,7 +7,7 @@ const schema = mongoose.Schema({
     required: true,
     unique: true
   },
-  avatarIcon: String,
+  password: String,
   role:{
     type:String,
     default: "USER",
