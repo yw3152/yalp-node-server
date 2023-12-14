@@ -4,7 +4,8 @@ const findUsers = () => model.find();
 const updateRole = (username, role) => model.findOneAndUpdate({username: username}, {role: role});
 const findUserById = (id) => model.findById(id)
 const updateUserProfile = (id, updateInfo) => model.update({_id: id}, {$set: updateInfo});
+const deleteUser = (userId) => model.deleteOne({ _id: userId });
 
 module.exports = {
-  userRegister, findUsers, updateRole, findUserById, updateUserProfile
+  userRegister, findUsers, updateRole, findUserById, updateUserProfile, deleteUser
 };

@@ -55,6 +55,14 @@ module.exports = (app) => {
       .catch(e => { console.log(e) })
   }
 
+  const deleteUser = async (req, res) => {
+    const userId = req.params.userId;
+    console.log("deleting", userId);
+    dao.deleteUser(userId)
+    .then(status => { console.log("after delete user", status); res.json(status) })
+    .catch(e => { console.log(e) })
+};
+
   app.post('/login', passport.authenticate("local"), userLogin)
   app.get('/users', findUsers)
   app.get('/user', getCurrentUser)
@@ -64,4 +72,5 @@ module.exports = (app) => {
   app.post('/register', userRegister)
   app.get('/logout', userLogout)
   app.put('/user/:uid', updateUserProfile)
+  app.delete("/users/:userId", deleteUser);
 }
