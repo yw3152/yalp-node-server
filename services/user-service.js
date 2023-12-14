@@ -7,17 +7,17 @@ let loggedInUserId = null;
 module.exports = (app) => {
   const findUsers = (req, res) => {
     dao.findUsers()
-        .then(user => res.json(user))
+      .then(users => { console.log("get all users", users); res.json(users) })
+      .catch(e => { console.log(e); res.sendStatus(403) })
   }
   const userRegister = (req, res) => {
     console.log(req.body);
-    const {email, username, password, role} = req.body;
-    const newUser = new User({email, username, password, role});
-
+    const { email, username, password, role } = req.body;
+    const newUser = new User({ email, username, password, role });
 
     User.register(newUser, password)
-    .then(status => {console.log("status", status); res.send(status)})
-        .catch(e=>{console.log("error", e); res.sendStatus(403)})
+      .then(status => { console.log("status", status); res.send(status) })
+      .catch(e => { console.log("error", e); res.sendStatus(403) })
   }
 
   const userLogin = (req, res) => {
@@ -29,16 +29,16 @@ module.exports = (app) => {
   const getCurrentUser = (req, res) => {
     console.log("get current user server", loggedInUserId)
     dao.findUserById(loggedInUserId)
-    .then(user => {console.log("get current", user);res.json(user)})
-        .catch(e=>{console.log(e); res.sendStatus(403)})
+      .then(user => { console.log("get current", user); res.json(user) })
+      .catch(e => { console.log(e); res.sendStatus(403) })
   }
 
   const getUserById = (req, res) => {
     const id = req.params.uid;
     console.log("get current user by id server", id)
     dao.findUserById(id)
-    .then(user => {console.log("get userby id", user);res.json(user)})
-        .catch(e=>{console.log(e); res.sendStatus(403)})
+      .then(user => { console.log("get userby id", user); res.json(user) })
+      .catch(e => { console.log(e); res.sendStatus(403) })
   }
 
   const userLogout = (req, res) => {
@@ -49,18 +49,19 @@ module.exports = (app) => {
 
   const updateUserProfile = (req, res) => {
     console.log("update profile in server", req.body)
-    dao.updateUserProfile(loggedInUserId, req.body)
-        .then(status => {console.log("after update user", status); res.json(status)})
-        .catch(e=>{console.log(e)})
+    const id = req.params.uid;
+    dao.updateUserProfile(id, req.body)
+      .then(status => { console.log("after update user", status); res.json(status) })
+      .catch(e => { console.log(e) })
   }
 
-  app.post('/login',  passport.authenticate("local"), userLogin)
+  app.post('/login', passport.authenticate("local"), userLogin)
   app.get('/users', findUsers)
   app.get('/user', getCurrentUser)
   app.get('/user/:uid', getUserById)
-  app.get('/register', (req,res) => res.render('users/register'))
-  app.get('/login', (req, res)=>res.render('users/login'))
+  app.get('/register', (req, res) => res.render('users/register'))
+  app.get('/login', (req, res) => res.render('users/login'))
   app.post('/register', userRegister)
   app.get('/logout', userLogout)
-  app.put('/user', updateUserProfile)
+  app.put('/user/:uid', updateUserProfile)
 }
