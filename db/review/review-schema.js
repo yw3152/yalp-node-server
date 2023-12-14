@@ -10,7 +10,7 @@ const schema = mongoose.Schema({
     restaurant: {
         location_id: String,
         _id: String,
-        restaurantName: String,
+        name: String,
     },
     content: String,
     rating: Number,
