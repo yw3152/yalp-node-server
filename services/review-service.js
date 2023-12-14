@@ -9,6 +9,10 @@ module.exports = (app) => {
         dao.findReviewsByRestaurantId(req.params.id)
             .then(reviews => res.json(reviews));
 
+    const findReviewsByLocalRestaurantId = (req, res) =>
+        dao.findReviewsByLocalRestaurantId(req.params.id)
+            .then(reviews => res.json(reviews));
+
     const createReview = (req, res) =>
         dao.createReview(req.body)
             .then(insertedReview => res.json(insertedReview));
@@ -19,6 +23,7 @@ module.exports = (app) => {
 
     app.get('/api/reviews', findAllReviews);
     app.get('/api/reviews/:id', findReviewsByRestaurantId);
+    app.get('/api/reviews/local/:id', findReviewsByLocalRestaurantId);
     app.post('/api/reviews', createReview);
     app.delete('/api/reviews/:id', deleteReview);
     // app.put('/api/reviews/:id', updateReview);
